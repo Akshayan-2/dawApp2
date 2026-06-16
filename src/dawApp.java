@@ -1,8 +1,9 @@
 /**
  * Akshayan Mathan
- * Ms. Xie 
- * 2026 06 08
+ * Ms. Xie
+ * 2026-06-12
  * ICS 3U7
+ * Executes the application
  */
 public class dawApp {
     public static void main(String[] args) {

@@ -1,38 +1,41 @@
 /**
  * Akshayan Mathan
- * Ms. Xie 
- * 2026 06 08
+ * Ms. Xie
+ * 2026-06-12
  * ICS 3U7
+ * Main window where the application actually runs with the sequencer
  */
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-
 public class mainFrame extends JFrame {
-    private stepSequencerPanel seq;
-    private transportPanel trans;
-    private ArrayList<trackRow> tracksList;
-
+    /**
+     * Constructs main window
+     */
     public mainFrame() {
-        setTitle("DAW - Step Sequencer");
+        setTitle("AK-STUDIOS");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 550);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new Color(30, 30, 30));
 
-        tracksList = new ArrayList<>();
-        tracksList.add(new trackRow("Kick",  new Color(200, 80, 80),  "sounds/kick.wav"));
-        tracksList.add(new trackRow("Snare", new Color(80, 200, 80),  "sounds/snare.wav"));
-        tracksList.add(new trackRow("HiHat", new Color(80, 80, 200),  "sounds/hihat.wav"));
-        tracksList.add(new trackRow("Clap",  new Color(200, 160, 80), "sounds/clap.wav"));
+        // track list array
+        ArrayList<trackRow> tracksList = new ArrayList<>();
+        tracksList.add(new trackRow("Kick",  new Color(245, 230, 255), "sounds/kick.wav"));
+        tracksList.add(new trackRow("Snare", new Color(235, 215, 255), "sounds/snare.wav"));
+        tracksList.add(new trackRow("HiHat", new Color(225, 200, 255), "sounds/hihat.wav"));
+        tracksList.add(new trackRow("Clap",  new Color(215, 185, 255), "sounds/clap.wav"));
+        tracksList.add(new pianoTrackRow());
 
-        seq = new stepSequencerPanel(tracksList);
-        trans = new transportPanel(seq);
-
-        setLayout(new BorderLayout());
-        add(trans, BorderLayout.NORTH);
-        add(seq, BorderLayout.CENTER);
+        // create sequencer panel
+        stepSequencerPanel sequencer = new stepSequencerPanel(tracksList);
         
+        setLayout(new BorderLayout());
+        // add transport panel
+        add(new transportPanel(sequencer, this), BorderLayout.NORTH);
+        // add sequencer panel
+        add(sequencer, BorderLayout.CENTER);
+
         setVisible(true);
     }
 }

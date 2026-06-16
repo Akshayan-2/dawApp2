@@ -1,8 +1,9 @@
 /**
  * Akshayan Mathan
- * Ms. Xie 
- * 2026 06 08
+ * Ms. Xie
+ * 2026-06-12
  * ICS 3U7
+ * Title screen, where the application starts
  */
 import javax.swing.*;
 import java.awt.*;
@@ -11,96 +12,125 @@ import java.awt.event.*;
 public class titleScreen extends JFrame implements ActionListener {
     private JButton btnStart, btnHelp, btnSettings, btnExit;
     private static int masterVolume = 80;
-
+    
+    /**
+     * Constructs title screen window
+     */
     public titleScreen() {
-        setTitle("DAW - Ableton Style Sequencer");
+        setTitle("DAW - AK Studios Sequencer");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 450);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new Color(0, 0, 128));
 
-        setLayout(new BorderLayout());
+        // background image pixel art
+        JPanel bgPanel = new JPanel(new BorderLayout()) {
+            private Image background = new ImageIcon("images/ak_studios.png").getImage();
+            
+            /**
+             * Paints the background image
+             * @param graphics target graphics context
+             */
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                super.paintComponent(graphics);
+                graphics.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        bgPanel.setOpaque(true);
+        setContentPane(bgPanel);
 
-        JLabel titleLabel = new JLabel("My DAW Sequencer", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 32));
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
-        add(titleLabel, BorderLayout.NORTH);
-
+        // title buttons panel
         JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 15, 15));
-        buttonPanel.setBackground(new Color(0, 0, 128));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
+        buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 80, 20, 80));
 
-        btnStart = new JButton("Start");
-        btnHelp = new JButton("Help");
+        btnStart    = new JButton("Start");
+        btnHelp     = new JButton("Help");
         btnSettings = new JButton("Settings");
-        btnExit = new JButton("Exit");
+        btnExit     = new JButton("Exit");
 
+        // button styling
         styleButton(btnStart);
         styleButton(btnHelp);
         styleButton(btnSettings);
         styleButton(btnExit);
-        
+
+        // action listeners
         btnStart.addActionListener(this);
         btnHelp.addActionListener(this);
         btnSettings.addActionListener(this);
         btnExit.addActionListener(this);
 
+        // add to panel
         buttonPanel.add(btnStart);
         buttonPanel.add(btnHelp);
         buttonPanel.add(btnSettings);
         buttonPanel.add(btnExit);
 
-        add(buttonPanel, BorderLayout.CENTER);
+        JPanel wrapper = new JPanel(new GridBagLayout());
+        wrapper.setOpaque(false);
+        wrapper.add(buttonPanel);
+        bgPanel.add(wrapper, BorderLayout.CENTER);
     }
 
-    private void styleButton(JButton btn) {
-        btn.setBackground(new Color(70, 130, 200));
-        btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("SansSerif", Font.BOLD, 16));
-        btn.setFocusPainted(false);
+    /**
+     * Styles the buttons
+     * @param button target styling button
+     */
+    private void styleButton(JButton button) {
+        // set base style
+        button.setBackground(new Color(165, 130, 220, 180));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("SansSerif", Font.BOLD, 16));
+        button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setBorderPainted(false);
     }
 
-    //button clicks
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnStart) {
+    /**
+     * @param event action click event
+     */
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == btnStart) {
+            // start main daw screen
             this.dispose();
-            mainFrame mainApp = new mainFrame();
-            mainApp.setVisible(true);
-        } 
-        else if (e.getSource() == btnHelp) {
+            new mainFrame().setVisible(true);
+        } else if (event.getSource() == btnHelp) {
+            // display the instructions dialog
             showHelpDialog();
-        } 
-        else if (e.getSource() == btnSettings) {
+        } else if (event.getSource() == btnSettings) {
+            // display settings option for volume
             showSettingsDialog();
-        } 
-        else if (e.getSource() == btnExit) {
+        } else if (event.getSource() == btnExit) {
+            // close program
             System.exit(0);
         }
     }
 
+    /**
+     * help menu
+     */
     private void showHelpDialog() {
-        String helpText = "<html><body><h2>How to use:</h2><ul>" +
-                "<li>Click step buttons to create a rhythm pattern.</li>" +
-                "<li>Press Play to hear your sequence.</li>" +
-                "<li>Adjust BPM to change tempo.</li>" +
-                "<li>Use Mute/Solo per track.</li>" +
-                "</ul></body></html>";
-        JOptionPane.showMessageDialog(this, helpText, "Help - Instructions", JOptionPane.PLAIN_MESSAGE);
+        // popup help text
+        JOptionPane.showMessageDialog(this, "Instructions for use...", "Help", JOptionPane.PLAIN_MESSAGE);
     }
 
+    /**
+     * Shows the settings menu
+     */
     private void showSettingsDialog() {
+        // slider for volume
         JSlider volumeSlider = new JSlider(0, 100, masterVolume);
-        volumeSlider.setMajorTickSpacing(25);
-        volumeSlider.setPaintTicks(true);
-        volumeSlider.setPaintLabels(true);
-        
-        int result = JOptionPane.showConfirmDialog(this, volumeSlider, "Master Volume", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, volumeSlider, "Master Volume", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+            // saving master volume
             masterVolume = volumeSlider.getValue();
         }
     }
 
+    /**
+     * Gets total master volume
+     * @return current integer volume
+     */
     public static int getMasterVolume() { 
         return masterVolume; 
     }
